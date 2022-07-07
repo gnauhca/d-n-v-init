@@ -41,6 +41,14 @@ curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install
 
 apt-get install nginx -y
 
+echo 'Paste ssl .crt content'
+sslCrt=$(sed '/^$/q')
+echo 'Paste ssl .key content'
+sslKey=$(sed '/^$/q')
+
+echo $sslCrt > /etc/nginx/${domain}_bundle.crt
+echo $sslKey > /etc/nginx/${domain}.key
+
 systemctl enable nginx
 systemctl enable v2ray
 systemctl start nginx
@@ -131,7 +139,7 @@ http {
         }
         location /${v2rayPath} {
             proxy_redirect off;
-            proxy_pass http://127.0.0.1:${v2rayPort}
+            proxy_pass http://127.0.0.1:${v2rayPort};
             proxy_http_version 1.1;
             proxy_set_header Upgrade \$http_upgrade;
             proxy_set_header Connection "upgrade";
