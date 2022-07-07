@@ -33,7 +33,7 @@ v2rayPort=27190
 
 echo "
 domain: ${domain}
-path: ${v2rayPath}
+path: /${v2rayPath}
 uuid: ${v2rayUuid}
 "
 
@@ -46,7 +46,7 @@ systemctl enable v2ray
 systemctl start nginx
 systemctl start v2ray
 
-cat > /usr/local/etc/v2ray/config2.json <<EOF
+cat > /usr/local/etc/v2ray/config.json <<EOF
 {
   "inbounds": [
     {
@@ -73,7 +73,7 @@ cat > /usr/local/etc/v2ray/config2.json <<EOF
 EOF
 
 
-cat > /etc/nginx/nginx2.conf <<EOF
+cat > /etc/nginx/nginx.conf <<EOF
 
 #user  nobody;
 worker_processes  1;
@@ -146,3 +146,5 @@ http {
 EOF
 systemctl restart nginx
 systemctl restart v2ray
+
+echo "congratulation! config successfully"
