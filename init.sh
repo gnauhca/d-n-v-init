@@ -46,8 +46,8 @@ sslCrt=$(sed '/^$/q')
 echo 'Paste ssl .key content'
 sslKey=$(sed '/^$/q')
 
-echo $sslCrt > /etc/nginx/${domain}_bundle.crt
-echo $sslKey > /etc/nginx/${domain}.key
+echo "$sslCrt" > /etc/nginx/${domain}_bundle.crt
+echo "$sslKey" > /etc/nginx/${domain}.key
 
 systemctl enable nginx
 systemctl enable v2ray
