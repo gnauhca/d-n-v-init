@@ -1,20 +1,50 @@
 #!/bin/sh
 
-read -p "Enter domain [xxx.com]: " domain
-read -p "Enter path [/something]: " v2rayPath
-read -p "Enter uuid: " v2rayUuid
+while [ -z "$domain" ]
+do
+read -p "Enter domain: " domain
+done
 
-domain=${domain:-abc.com}
-v2rayPath=${v2rayPath:-/something}
-v2rayUuid=${v2rayUuid:-278b929b-f9f0-4d15-98ca-1e6f31a78073}
+while [ -z "$v2rayPath" ]
+do
+read -p "Enter path (without /): " v2rayPath
+done
+
+while [ -z "$v2rayUuid" ]
+do
+read -p "Enter uuid: " v2rayUuid
+done
+
+# domain=${domain:-xxx.com}
+# v2rayPath=${v2rayPath}
+# v2rayUuid=${v2rayUuid}
 v2rayPort=27190
 
-# apt-get install nginx -y
-# apt-get install v2ray -y
-# systemctl enable nginx
-# systemctl enable v2ray
-# systemctl start nginx
-# systemctl start v2ray
+# if [ -z "$domain" ]
+# then
+# echo "domain is empty"
+# else if [ -z "$path" ]
+# then
+# echo "path is empty"
+# else if [ -z "$uuid" ]
+# then
+# echo "uuid is empty"
+# fi
+
+echo "
+domain: ${domain}
+path: ${v2rayPath}
+uuid: ${v2rayUuid}
+"
+
+curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh | bash
+
+apt-get install nginx -y
+
+systemctl enable nginx
+systemctl enable v2ray
+systemctl start nginx
+systemctl start v2ray
 
 cat > /usr/local/etc/v2ray/config2.json <<EOF
 {
@@ -29,7 +59,7 @@ cat > /usr/local/etc/v2ray/config2.json <<EOF
       "streamSettings": {
         "network": "ws",
         "wsSettings": {
-            "path": "${v2rayPath}"
+            "path": "/${v2rayPath}"
         }
       }
     }
@@ -99,7 +129,7 @@ http {
             root html; 
             index  index.html index.htm;
         }
-        location ${v2rayPath} {
+        location /${v2rayPath} {
             proxy_redirect off;
             proxy_pass http://127.0.0.1:${v2rayPort}
             proxy_http_version 1.1;
@@ -114,5 +144,5 @@ http {
 
 }
 EOF
-# systemctl restart nginx
-# systemctl restart v2ray
+systemctl restart nginx
+systemctl restart v2ray
