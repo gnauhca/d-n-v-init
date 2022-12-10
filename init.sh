@@ -14,7 +14,7 @@ done
 # v2rayUuid=${v2rayUuid}
 v2rayPort=27190
 
-if [ -z "$path" ]
+# if [ -z "$path" ]
 # then
 # echo "path is empty"
 # else if [ -z "$uuid" ]
@@ -23,7 +23,6 @@ if [ -z "$path" ]
 # fi
 
 echo "
-domain: ${domain}
 path: /${v2rayPath}
 uuid: ${v2rayUuid}
 "
