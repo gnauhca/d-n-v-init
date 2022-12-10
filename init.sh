@@ -1,10 +1,4 @@
 #!/bin/sh
-
-while [ -z "$domain" ]
-do
-read -p "Enter domain: " domain
-done
-
 while [ -z "$v2rayPath" ]
 do
 read -p "Enter path (without /): " v2rayPath
@@ -20,10 +14,7 @@ done
 # v2rayUuid=${v2rayUuid}
 v2rayPort=27190
 
-# if [ -z "$domain" ]
-# then
-# echo "domain is empty"
-# else if [ -z "$path" ]
+if [ -z "$path" ]
 # then
 # echo "path is empty"
 # else if [ -z "$uuid" ]
@@ -41,13 +32,13 @@ curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install
 
 apt-get install nginx -y
 
-echo 'Paste ssl .crt content'
-sslCrt=$(sed '/^$/q')
-echo 'Paste ssl .key content'
-sslKey=$(sed '/^$/q')
+# echo 'Paste ssl .crt content'
+# sslCrt=$(sed '/^$/q')
+# echo 'Paste ssl .key content'
+# sslKey=$(sed '/^$/q')
 
-echo "$sslCrt" > /etc/nginx/${domain}_bundle.crt
-echo "$sslKey" > /etc/nginx/${domain}.key
+# echo "$sslCrt" > /etc/nginx/${domain}_bundle.crt
+# echo "$sslKey" > /etc/nginx/${domain}.key
 
 systemctl enable nginx
 systemctl enable v2ray
@@ -115,7 +106,7 @@ http {
         listen       80;
         server_name  localhost;
         location / {
-            root   html;
+            root   /var/www/html;
             index  index.html index.htm;
         }
 				rewrite ^ https:/\$http_host\$request_uri? permanent;
@@ -124,8 +115,8 @@ http {
         listen       443 ssl;
         server_name  localhost;
 
-        ssl_certificate      ${domain}_bundle.crt;
-        ssl_certificate_key  ${domain}.key;
+        ssl_certificate      server.crt;
+        ssl_certificate_key  server.key;
 
         ssl_session_cache    shared:SSL:1m;
         ssl_session_timeout  5m;
@@ -134,7 +125,7 @@ http {
         ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE; 
         ssl_prefer_server_ciphers on;
         location / {
-            root html; 
+            root /var/www/html;
             index  index.html index.htm;
         }
         location /${v2rayPath} {
